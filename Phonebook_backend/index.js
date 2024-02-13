@@ -1,8 +1,15 @@
+// Imports
 const express = require('express')
+const morgan = require('morgan')
+
+// Define app
 const app = express()
 
+// Use middleware
 app.use(express.json())
+app.use(morgan('tiny'))
 
+// Default array of persons
 let persons = [
     { 
       "id": 1,
@@ -54,6 +61,9 @@ app.delete('/api/persons/:id', (req, res) => {
 
 app.post('/api/persons', (req, res) => {
   const person = req.body
+
+  console.log(person)
+
   if(!person.name || !person.number){
     return res.status(400).json({
       error: 'name or number missing'
@@ -64,10 +74,17 @@ app.post('/api/persons', (req, res) => {
       error: 'name must be unique'
     })
   }
-  person.id = Math.floor(Math.random() * 10000)
+  person.id = Math.floor(Math.random() * 10000) // replace with hash-table?
   persons = persons.concat(person)
   res.json(person)
 })
+// ...
+
+// Use middleware
+app.use(express.json())
+app.use(morgan('combined'))
+
+// ...
 
 const PORT = 3002 
 app.listen(PORT, () => {
