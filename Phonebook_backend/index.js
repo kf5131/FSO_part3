@@ -1,11 +1,13 @@
 // Imports
 const express = require('express')
 const morgan = require('morgan')
+const cors = require('cors')
 
 // Define app
 const app = express()
 
 // Use middleware
+app.use(cors())
 app.use(express.json())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
