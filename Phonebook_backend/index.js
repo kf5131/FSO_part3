@@ -7,7 +7,11 @@ const app = express()
 
 // Use middleware
 app.use(express.json())
-app.use(morgan('tiny'))
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
+
+// Define custom token for morgan
+morgan.token('body', function (req, res) { return JSON.stringify(req.body) })
+
 
 // Default array of persons
 let persons = [
@@ -78,13 +82,6 @@ app.post('/api/persons', (req, res) => {
   persons = persons.concat(person)
   res.json(person)
 })
-// ...
-
-// Use middleware
-app.use(express.json())
-app.use(morgan('combined'))
-
-// ...
 
 const PORT = 3002 
 app.listen(PORT, () => {
