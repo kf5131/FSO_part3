@@ -1,0 +1,3 @@
+# flyctl launch added from Phonebook_backend/.gitignore
+Phonebook_backend/**/node_modules
+fly.toml
