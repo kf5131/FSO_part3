@@ -77,23 +77,22 @@ app.delete('/api/persons/:id', (req, res) => {
 })
 
 app.post('/api/persons', (req, res) => {
-  const person = req.body
+  const body = req.body
 
-  console.log(person)
-
-  if(!person.name || !person.number){
-    return res.status(400).json({
-      error: 'name or number missing'
+  if (!body.name || !body.number) {
+    return res.status(400).json({ 
+      error: 'name or number missing' 
     })
   }
-  if(persons.find(p => p.name === person.name)){
-    return res.status(400).json({
-      error: 'name must be unique'
-    })
-  }
-  person.id = Math.floor(Math.random() * 10000) // replace with hash-table?
-  persons = persons.concat(person)
-  res.json(person)
+
+  const person = new Person({
+    name: body.name,
+    number: body.number,
+  })
+
+  person.save().then(savedPerson => {
+    res.json(savedPerson)
+  })
 })
 
 const PORT = process.env.PORT || 3002 
