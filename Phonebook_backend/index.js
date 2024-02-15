@@ -48,17 +48,10 @@ let persons = [
 ]
 
 app.get('/api/persons', (req, res) => {
-  // 
   Person.find({}).then(persons => {
     res.json(persons)
   })
 })
-
-// app.get('/api/notes', (request, response) => {
-//   Note.find({}).then(notes => {
-//     response.json(notes)
-//   })
-// })
 
 
 app.get('/info', (req, res) => {
