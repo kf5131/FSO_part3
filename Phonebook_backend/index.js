@@ -3,6 +3,11 @@ const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
 
+require('dotenv').config()
+
+// import database connection
+const Person = require('./models/person')
+
 // Define app
 const app = express()
 
@@ -10,6 +15,8 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
+
+// Serve static files
 app.use(express.static('dist'))
 
 // Define custom token for morgan
@@ -41,8 +48,18 @@ let persons = [
 ]
 
 app.get('/api/persons', (req, res) => {
-  res.json(persons)
+  // 
+  Person.find({}).then(persons => {
+    res.json(persons)
+  })
 })
+
+// app.get('/api/notes', (request, response) => {
+//   Note.find({}).then(notes => {
+//     response.json(notes)
+//   })
+// })
+
 
 app.get('/info', (req, res) => {
   const date = new Date()

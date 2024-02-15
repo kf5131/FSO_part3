@@ -58,20 +58,3 @@ if (process.argv.length > 5) {
     console.log('Please provide the password as an argument: node mongo.js <password>');
     process.exit(1);
 }
-
-// const person = new Person({
-//     name: 'Arto Hellas',
-//     number: '040-123456'
-// });
-
-
-// person.save().then(result => {
-//     console.log('person saved!');
-//     mongoose.connection.close();
-// });
-
-
-// Person.find({}).then(result => {
-//     result.forEach(person => {
-//         console.log(person);
-//     });
