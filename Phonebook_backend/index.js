@@ -9,9 +9,8 @@ const Person = require('./models/person')
 // Serve static files
 app.use(express.static('dist'))
 
-
 // Define error handler
-const errorHandler = (error, request, response, next) => {
+const errorHandler = (error, response, next) => {
   console.error(error.message)
 
   if (error.name === 'CastError') {
@@ -35,37 +34,14 @@ app.use(cors())
 app.use(express.json())
 
 // Define custom token for morgan
-morgan.token('body', function (req, res) { return JSON.stringify(req.body) })
+morgan.token('body', function (req) { return JSON.stringify(req.body) })
 
 // Define unknown endpoint
 const unkownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
 }
 
-// // Default array of persons
-// let persons = [
-//     { 
-//       "id": 1,
-//       "name": "Arto Hellas", 
-//       "number": "040-123456"
-//     },
-//     { 
-//       "id": 2,
-//       "name": "Ada Lovelace", 
-//       "number": "39-44-5323523"
-//     },
-//     { 
-//       "id": 3,
-//       "name": "Dan Abramov", 
-//       "number": "12-43-234345"
-//     },
-//     { 
-//       "id": 4,
-//       "name": "Mary Poppendieck", 
-//       "number": "39-23-6423122"
-//     }
-// ]
-
+// Define routes
 app.get('/api/persons', (req, res) => {
   Person.find({}).then(persons => {
     res.json(persons)
@@ -89,13 +65,13 @@ app.get('/api/persons/:id', (req, res, next) => {
       res.status(404).end()
     }
   })
-  .catch(error => next(error))
+    .catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (req, res, next) => {
   const id = req.params.id
   Person.findByIdAndDelete(id)
-    .then(result => {
+    .then(() => {
       res.status(204).end()
     })
     .catch(error => {next(error)})
@@ -105,8 +81,8 @@ app.post('/api/persons', (req, res, next) => {
   const body = req.body
 
   if (!body.name || !body.number) {
-    return res.status(400).json({ 
-      error: 'name or number missing' 
+    return res.status(400).json({
+      error: 'name or number missing'
     })
   }
 
@@ -130,10 +106,10 @@ app.put('/api/persons/:id', (req, res, next) => {
   }
 
   try {
-  Person.findByIdAndUpdate(id, person, { new: true })
-    .then(updatedPerson => {
-      res.json(updatedPerson)
-    })
+    Person.findByIdAndUpdate(id, person, { new: true })
+      .then(updatedPerson => {
+        res.json(updatedPerson)
+      })
   } catch (error) {
     console.log(error)
     next(error)
@@ -144,7 +120,7 @@ app.put('/api/persons/:id', (req, res, next) => {
 app.use(unkownEndpoint)
 app.use(errorHandler)
 
-const PORT = process.env.PORT || 3002 
+const PORT = process.env.PORT || 3002
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
