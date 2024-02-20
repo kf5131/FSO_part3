@@ -14,8 +14,23 @@ mongoose.connect(url)
     });
 
 const personSchema = new mongoose.Schema({
-    name: String,
-    number: String
+    name: {
+        type: String,
+        required: true,
+        unique: true,
+        minlength: [3, 'Name must be at least 3 characters long']
+    },
+    number: {
+        type: String,
+        required: true,
+        minlength: [8, 'Phone number must be at least 8 digits long'],
+        validate: {
+            validator: function(v) {
+                return /^(?:\d{2}-\d{6}|\d{3}-\d{5})$/.test(v);
+            },
+            message: props => `${props.value} is not a valid phone number!`
+        },
+    }
 });
 
 personSchema.set('toJSON', {
@@ -25,5 +40,7 @@ personSchema.set('toJSON', {
         delete returnedObject.__v;
     }
 });
+
+personSchema.set('validateBeforeSave', true);
 
 module.exports = mongoose.model('Person', personSchema);
